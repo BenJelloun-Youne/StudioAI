@@ -7,7 +7,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = "ma_cle_ultra_secrete_2024"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///casaia.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///aiflow.db'
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['SESSION_COOKIE_SECURE'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
@@ -37,8 +37,8 @@ def create_db():
     with app.app_context():
         db.create_all()
         # Création du compte admin par défaut
-        if not User.query.filter_by(email='admin@casaia.ma').first():
-            admin = User(email='admin@casaia.ma', password_hash=generate_password_hash('admin123'), is_admin=True, statut='payé', offre='pro')
+        if not User.query.filter_by(email='admin@aiflow.ma').first():
+            admin = User(email='admin@aiflow.ma', password_hash=generate_password_hash('admin123'), is_admin=True, statut='payé', offre='pro')
             db.session.add(admin)
             db.session.commit()
 
@@ -134,15 +134,15 @@ def admin():
     if not user.is_admin:
         flash("Accès réservé à l'admin.")
         return redirect(url_for('dashboard'))
-    users = User.query.filter(User.email != 'admin@casaia.ma').all()
+    users = User.query.filter(User.email != 'admin@aiflow.ma').all()
     # Stats
     now = datetime.now()
-    abonnements_actifs = User.query.filter(User.statut == 'payé', User.email != 'admin@casaia.ma').count()
-    inscriptions_mois = User.query.filter(db.extract('month', User.date_inscription) == now.month, db.extract('year', User.date_inscription) == now.year, User.email != 'admin@casaia.ma').count()
-    paiements_en_attente = User.query.filter(User.statut == 'en_attente_validation', User.email != 'admin@casaia.ma').count()
+    abonnements_actifs = User.query.filter(User.statut == 'payé', User.email != 'admin@aiflow.ma').count()
+    inscriptions_mois = User.query.filter(db.extract('month', User.date_inscription) == now.month, db.extract('year', User.date_inscription) == now.year, User.email != 'admin@aiflow.ma').count()
+    paiements_en_attente = User.query.filter(User.statut == 'en_attente_validation', User.email != 'admin@aiflow.ma').count()
     # CA et MRR (selon offre)
     offre_prix = {'essentiel': 1200, 'pro': 3300, 'sur-mesure': 0}
-    users_payes = User.query.filter(User.statut == 'payé', User.email != 'admin@casaia.ma').all()
+    users_payes = User.query.filter(User.statut == 'payé', User.email != 'admin@aiflow.ma').all()
     ca_mois = sum(offre_prix.get(u.offre, 0) for u in users_payes if u.date_inscription.month == now.month and u.date_inscription.year == now.year)
     mrr = sum(offre_prix.get(u.offre, 0) for u in users_payes)
     return render_template('admin.html', users=users, abonnements_actifs=abonnements_actifs, inscriptions_mois=inscriptions_mois, paiements_en_attente=paiements_en_attente, ca_mois=ca_mois, mrr=mrr)
@@ -222,7 +222,7 @@ def admin_kpi_data():
         year = now.year if now.month - i > 0 else now.year - 1
         label = f"{month:02d}/{year}"
         labels.append(label)
-        users_month = User.query.filter(db.extract('month', User.date_inscription) == month, db.extract('year', User.date_inscription) == year, User.email != 'admin@casaia.ma').all()
+        users_month = User.query.filter(db.extract('month', User.date_inscription) == month, db.extract('year', User.date_inscription) == year, User.email != 'admin@aiflow.ma').all()
         inscriptions.append(len(users_month))
         ca.append(sum(offre_prix.get(u.offre, 0) for u in users_month if u.statut == 'payé'))
     return jsonify({'labels': labels, 'inscriptions': inscriptions, 'ca': ca})

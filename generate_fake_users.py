@@ -24,4 +24,4 @@ def create_fake_users(n=30):
 
 if __name__ == '__main__':
     with app.app_context():
-        create_fake_users(30) 
+    create_fake_users(30) 

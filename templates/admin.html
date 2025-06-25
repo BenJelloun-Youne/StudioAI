@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Admin - CASA IA</title>
+    <title>Admin - AI Flow</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
@@ -42,7 +42,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
         <div class="container">
             <a class="navbar-brand fw-bold d-flex align-items-center" href="/" style="font-family: 'El Messiri', serif; color: #a4161a;">
-                <img src="/static/logo.jpeg" alt="CASA IA" height="38" style="border-radius:10px;box-shadow:0 2px 8px #00b4d822;margin-right:10px;"> CASA IA
+                <img src="/static/logo.png" alt="AI Flow" height="38" style="border-radius:10px;box-shadow:0 2px 8px #00b4d822;margin-right:10px;"> AI Flow
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -64,7 +64,7 @@
         <div class="admin-header-notion mb-4" style="display:flex;align-items:center;justify-content:center;gap:16px;background:#fff;border-radius:18px;box-shadow:0 4px 32px #00915022;padding:24px 32px 18px 32px;">
             <span class="notion-emoji" style="font-size:2.5rem;">📊</span>
             <span class="notion-title" style="font-family:'El Messiri',serif;font-size:2.2rem;font-weight:800;color:#222;letter-spacing:1px;">
-                Dashboard Admin <span style="color:#009150;">CASA IA</span>
+                Dashboard Admin <span style="color:#009150;">AI Flow</span>
             </span>
         </div>
         <div class="row mb-4 g-3 kpi-row-admin">
@@ -106,21 +106,21 @@
             <input type="text" class="form-control mb-3" placeholder="Filtrer par email, offre ou statut..." id="filterInput">
             <div class="table-responsive">
                 <table class="table macos-table align-middle">
-                    <thead>
-                        <tr>
-                            <th>Email</th>
-                            <th>Offre</th>
-                            <th>Statut</th>
-                            <th>Date inscription</th>
-                            <th>Preuve paiement</th>
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Offre</th>
+                        <th>Statut</th>
+                        <th>Date inscription</th>
+                        <th>Preuve paiement</th>
                             <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for u in users %}
-                        <tr>
-                            <td>{{ u.email }}</td>
-                            <td>{{ u.offre|capitalize }}</td>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for u in users %}
+                    <tr>
+                        <td>{{ u.email }}</td>
+                        <td>{{ u.offre|capitalize }}</td>
                             <td>
                                 {% if u.statut == 'payé' %}
                                     <span class="badge bg-success">Payé</span>
@@ -138,11 +138,11 @@
                             <td>
                                 {% if u.preuve_paiement %}
                                     <a href="/{{ u.preuve_paiement }}" target="_blank" class="btn btn-link btn-sm p-0">Voir</a>
-                                {% else %}
-                                    <span class="text-muted">-</span>
-                                {% endif %}
-                            </td>
-                            <td>
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
                                 {% if u.statut in ['en_attente_validation', 'preuve_supplémentaire'] %}
                                 <div class="d-flex flex-wrap gap-2 justify-content-center align-items-center">
                                     <a href="/admin/valider/{{ u.id }}" class="text-success" title="Valider"><i class="bi bi-check-circle-fill" style="font-size:1.3em;"></i></a>
@@ -155,21 +155,21 @@
                                             <input type="text" name="message_admin" class="form-control form-control-sm mb-2" placeholder="Message (optionnel)">
                                             <button type="submit" class="btn btn-warning btn-sm w-100">Envoyer</button>
                                         </div>
-                                    </form>
+                                            </form>
                                 </div>
-                                {% else %}
+                            {% else %}
                                 <div class="d-flex flex-wrap gap-2 justify-content-center align-items-center">
                                     <a href="{{ url_for('admin_agents', user_id=u.id) }}" class="text-info" title="Gérer IA"><i class="bi bi-robot" style="font-size:1.3em;"></i></a>
                                     <span class="text-secondary" title="Gérer utilisateur" style="opacity:0.5;"><i class="bi bi-person" style="font-size:1.3em;"></i></span>
                                 </div>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
         </div>
+    </div>
     </div>
     {% endblock %}
     <footer class="admin-footer-motif mt-5 text-center small text-muted">
@@ -179,7 +179,7 @@
             <circle cx="30" cy="12" r="2" fill="#14532d"/>
             <circle cx="90" cy="12" r="2" fill="#14532d"/>
         </svg>
-        <div>Dashboard CASA IA &copy; 2024</div>
+        <div>Dashboard AI Flow &copy; 2024</div>
     </footer>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
