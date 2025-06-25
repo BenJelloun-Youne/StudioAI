@@ -1,0 +1,29 @@
+{% extends 'dashboard.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Mes agents IA</h2>
+    {% if agents %}
+    <table class="table table-bordered macos-table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Type</th>
+                <th>Configurer</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for agent in agents %}
+            <tr>
+                <td>{{ agent.nom }}</td>
+                <td>{{ agent.type }}</td>
+                <td><a href="{{ url_for('config_agent', agent_id=agent.id) }}" class="btn btn-primary btn-sm">Configurer</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-info">Aucun agent IA n'est encore attribué à votre compte.</div>
+    {% endif %}
+    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Retour au dashboard</a>
+</div>
+{% endblock %} 

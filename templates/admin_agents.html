@@ -1,0 +1,30 @@
+{% extends 'admin.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Agents IA de {{ user.email }}</h2>
+    <a href="{{ url_for('add_agent', user_id=user.id) }}" class="btn btn-primary mb-3">Ajouter un agent IA</a>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Type</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for agent in agents %}
+            <tr>
+                <td>{{ agent.nom }}</td>
+                <td>{{ agent.type }}</td>
+                <td>
+                    <form action="{{ url_for('delete_agent', agent_id=agent.id, user_id=user.id) }}" method="post" style="display:inline-block;">
+                        <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ url_for('admin') }}" class="btn btn-secondary">Retour à l'admin</a>
+</div>
+{% endblock %} 

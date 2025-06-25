@@ -1,0 +1,37 @@
+{% extends 'dashboard.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Configurer l'agent IA : {{ agent.nom }}</h2>
+    <form method="post">
+        {% if agent.type == 'emailing' %}
+            <div class="mb-3">
+                <label for="email" class="form-label">Adresse e-mail d'envoi</label>
+                <input type="email" class="form-control" id="email" name="email" value="{{ config.email or '' }}">
+            </div>
+            <div class="mb-3">
+                <label for="objet" class="form-label">Objet par défaut</label>
+                <input type="text" class="form-control" id="objet" name="objet" value="{{ config.objet or '' }}">
+            </div>
+            <div class="mb-3">
+                <label for="template" class="form-label">Template d'e-mail</label>
+                <textarea class="form-control" id="template" name="template" rows="4">{{ config.template or '' }}</textarea>
+            </div>
+        {% elif agent.type == 'comptable' %}
+            <div class="mb-3">
+                <label for="logiciel" class="form-label">Nom du logiciel comptable</label>
+                <input type="text" class="form-control" id="logiciel" name="logiciel" value="{{ config.logiciel or '' }}">
+            </div>
+            <div class="mb-3">
+                <label for="frequence" class="form-label">Fréquence de saisie</label>
+                <input type="text" class="form-control" id="frequence" name="frequence" value="{{ config.frequence or '' }}">
+            </div>
+            <div class="mb-3">
+                <label for="notes" class="form-label">Notes complémentaires</label>
+                <textarea class="form-control" id="notes" name="notes" rows="3">{{ config.notes or '' }}</textarea>
+            </div>
+        {% endif %}
+        <button type="submit" class="btn btn-success">Enregistrer</button>
+        <a href="{{ url_for('mes_agents') }}" class="btn btn-secondary">Annuler</a>
+    </form>
+</div>
+{% endblock %} 

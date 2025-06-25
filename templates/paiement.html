@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Paiement - CASA IA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="/" style="font-family: 'El Messiri', serif; color: #a4161a;">
+                <img src="/static/logo.jpeg" alt="CASA IA" height="38" style="border-radius:10px;box-shadow:0 2px 8px #00b4d822;margin-right:10px;"> CASA IA
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Accueil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/#solutions">Solutions</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/#tarifs">Tarifs</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/#contact">Contact</a></li>
+                    <li class="nav-item"><a class="btn btn-outline-danger ms-2" href="/logout">Déconnexion</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div style="padding-top:90px;"></div>
+    <div class="container">
+        <div class="card shadow p-4 mx-auto" style="max-width:500px;">
+            <h2 class="mb-3">Paiement de l'abonnement</h2>
+            <form method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="mode" class="form-label">Mode de paiement</label>
+                    <select class="form-select" id="mode" name="mode" required>
+                        <option value="cb">Carte bancaire (simulation)</option>
+                        <option value="wu">Western Union</option>
+                        <option value="wafacash">Wafacash</option>
+                        <option value="autre">Autre service marocain</option>
+                    </select>
+                </div>
+                <div id="instructions" class="mb-3 text-muted small"></div>
+                <div class="mb-3">
+                    <label for="file" class="form-label">Preuve de paiement (reçu, capture, PDF...)</label>
+                    <input type="file" class="form-control" id="file" name="file" accept="image/*,application/pdf">
+                    <div class="form-text">Ou saisissez une référence&nbsp;:</div>
+                    <input type="text" class="form-control mt-1" id="preuve" name="preuve" placeholder="Référence ou commentaire">
+                </div>
+                <button type="submit" class="btn btn-success w-100">J'ai payé / Je valide</button>
+            </form>
+            <div class="mt-3">
+                <a href="/dashboard">Retour à mon espace</a>
+            </div>
+        </div>
+    </div>
+    <script>
+    const select = document.getElementById('mode');
+    const instructions = document.getElementById('instructions');
+    function updateInstructions() {
+        if(select.value === 'cb') {
+            instructions.innerHTML = "<b>Simulation CB :</b> Entrez vos coordonnées bancaires sur la page suivante (aucun débit réel).";
+        } else if(select.value === 'wu') {
+            instructions.innerHTML = "<b>Western Union :</b> Envoyez le montant à 'CASA IA', Casablanca. Envoyez le reçu à contact@casaia.ma.";
+        } else if(select.value === 'wafacash') {
+            instructions.innerHTML = "<b>Wafacash :</b> Rendez-vous dans une agence Wafacash, envoyez à 'CASA IA', puis envoyez le reçu à contact@casaia.ma.";
+        } else {
+            instructions.innerHTML = "<b>Autre :</b> Contactez-nous pour les instructions spécifiques.";
+        }
+    }
+    select.addEventListener('change', updateInstructions);
+    updateInstructions();
+    </script>
+</body>
+</html> 

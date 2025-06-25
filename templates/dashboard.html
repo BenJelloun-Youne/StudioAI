@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mon espace - CASA IA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+</head>
+<body class="bg-light">
+    <header class="admin-sticky-header shadow-sm mb-4">
+        <div class="container-fluid d-flex align-items-center justify-content-between py-2">
+            <div class="d-flex align-items-center gap-2">
+                <img src="/static/logo.jpeg" alt="CASA IA" height="38" style="border-radius:10px;box-shadow:0 2px 8px #00b4d822;">
+                <span class="fw-bold" style="font-family:'El Messiri',serif;font-size:1.5rem;color:#a4161a;">CASA IA</span>
+            </div>
+        </div>
+    </header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="/" style="font-family: 'El Messiri', serif; color: #a4161a;">
+                <img src="/static/logo.jpeg" alt="CASA IA" height="38" style="border-radius:10px;box-shadow:0 2px 8px #00b4d822;margin-right:10px;"> CASA IA
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Accueil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/#solutions">Solutions</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/#tarifs">Tarifs</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/#contact">Contact</a></li>
+                    <li class="nav-item"><a class="btn btn-outline-danger ms-2" href="/logout">Déconnexion</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div style="padding-top:90px;"></div>
+    <div class="container-fluid px-2 px-md-4">
+        {% if user.message_admin %}
+        <div class="alert alert-info alert-dismissible fade show d-flex align-items-center gap-2" role="alert" style="font-size:1.08rem;box-shadow:0 2px 16px #00b4d822;">
+            <span style="font-size:1.6rem;">📩</span>
+            <div><b>Message de l'équipe CASA IA&nbsp;:</b><br>{{ user.message_admin }}</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+        </div>
+        {% endif %}
+        <!-- Popup notification création/validation -->
+        {% if user.statut != 'payé' %}
+        <div class="modal fade macos-modal" id="notifCreationModal" tabindex="-1" aria-labelledby="notifCreationLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content macos-modal-content">
+              <div class="modal-header macos-modal-header">
+                <h5 class="modal-title fw-bold macos-modal-title" id="notifCreationLabel">Compte en cours de validation</h5>
+                <button type="button" class="btn-close macos-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+              </div>
+              <div class="modal-body macos-modal-body">
+                <span class="typewriter">Votre compte est en cours de création/validation.</span><br>
+                <span class="dynamic-line line-2">Vous serez notifié dès qu'un administrateur aura validé votre paiement.</span><br>
+                <span class="dynamic-line line-3"><span style="font-size:0.98em;color:#0b8619;">Merci pour votre confiance !</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        <!-- Popup notification plateforme en création -->
+        {% if user.statut == 'payé' %}
+        <div class="modal fade macos-modal" id="notifPlateformeModal" tabindex="-1" aria-labelledby="notifPlateformeLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content macos-modal-content">
+              <div class="modal-header macos-modal-header">
+                <h5 class="modal-title fw-bold macos-modal-title" id="notifPlateformeLabel">Plateforme en cours de lancement</h5>
+                <button type="button" class="btn-close macos-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+              </div>
+              <div class="modal-body macos-modal-body">
+                <span class="typewriter">Félicitations, votre paiement est validé !</span><br>
+                <span class="dynamic-line line-2">La plateforme CASA IA est encore en cours de lancement, vous serez notifié dès l'ouverture complète des services.</span><br>
+                <span class="dynamic-line line-3"><span style="font-size:0.98em;color:#a4161a;">Restez connecté, de belles surprises arrivent !</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        <div class="card shadow p-4 mx-auto dashboard-card-responsive">
+            <h2 class="mb-3 dashboard-title-responsive">Bienvenue, {{ user.email }}</h2>
+            <p><b>Offre :</b> {{ user.offre|capitalize }}</p>
+            <p><b>Statut :</b> {{ user.statut }}</p>
+            {% if user.statut != 'payé' %}
+            <a href="/paiement" class="btn btn-success w-100 dashboard-btn-responsive">Procéder au paiement</a>
+            {% else %}
+            <div class="alert alert-success mt-3 dashboard-alert-responsive">Votre abonnement est actif. Merci !</div>
+            {% endif %}
+            {% if user.statut == 'payé' %}
+            <a href="{{ url_for('mes_agents') }}" class="btn btn-info mt-3 dashboard-btn-responsive">Mes agents IA</a>
+            {% endif %}
+        </div>
+    </div>
+    <style>
+    .premium-notif {
+        border: none;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 18px;
+    }
+    .pulse-emoji {
+        animation: pulse-emoji 1.2s infinite alternate;
+    }
+    @keyframes pulse-emoji {
+        0% { transform: scale(1); filter: drop-shadow(0 0 0 #0b8619); }
+        100% { transform: scale(1.18); filter: drop-shadow(0 0 12px #0b8619cc); }
+    }
+    .bounce-emoji {
+        animation: bounce-emoji 1.3s infinite;
+    }
+    @keyframes bounce-emoji {
+        0%,100% { transform: translateY(0); }
+        30% { transform: translateY(-10px); }
+        60% { transform: translateY(2px); }
+    }
+    .macos-modal-content {
+        background: rgba(255,255,255,0.82);
+        backdrop-filter: blur(16px) saturate(1.2);
+        border-radius: 28px;
+        box-shadow: 0 8px 40px #0b861933, 0 1.5px 8px #a4161a22;
+        border: 1.5px solid #e3f6fd;
+        overflow: hidden;
+        animation: macos-popin 0.55s cubic-bezier(.4,2,.6,1);
+    }
+    @keyframes macos-popin {
+        0% { transform: scale(0.92) translateY(40px); opacity: 0; }
+        100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+    .macos-modal-header {
+        background: linear-gradient(90deg,#e3f6fd 60%,#fffbe6 100%);
+        border-bottom: none;
+        border-radius: 28px 28px 0 0;
+        padding: 18px 28px 10px 28px;
+        box-shadow: 0 2px 12px #00b4d822;
+        display: flex;
+        align-items: center;
+    }
+    .macos-modal-title {
+        font-family: 'El Messiri', serif;
+        font-size: 1.25rem;
+        color: #0b8619;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+    }
+    .macos-modal-body {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.13rem;
+        color: #222;
+        padding: 18px 28px 24px 28px;
+        background: none;
+        border-radius: 0 0 28px 28px;
+    }
+    .macos-close {
+        filter: grayscale(0.7) brightness(1.2);
+        opacity: 0.7;
+        transition: opacity 0.2s, filter 0.2s;
+        margin-left: 12px;
+    }
+    .macos-close:hover {
+        opacity: 1;
+        filter: none;
+    }
+    @media (max-width: 600px) {
+        .macos-modal-content { border-radius: 18px; padding: 0; }
+        .macos-modal-header, .macos-modal-body { padding: 12px 10px; }
+    }
+    .macos-modal-body .dynamic-line {
+        opacity: 0;
+        transform: translateY(18px);
+        animation: fadeInLine 0.7s forwards;
+    }
+    .macos-modal-body .dynamic-line.line-1 { animation-delay: 0.2s; }
+    .macos-modal-body .dynamic-line.line-2 { animation-delay: 0.8s; }
+    .macos-modal-body .dynamic-line.line-3 { animation-delay: 1.4s; }
+    @keyframes fadeInLine {
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .macos-modal-body .typewriter {
+        display: inline-block;
+        border-right: 2px solid #0b8619;
+        white-space: nowrap;
+        overflow: hidden;
+        animation: typing 1.6s steps(40, end), blink-caret 0.7s step-end infinite alternate;
+        font-weight: 700;
+        color: #0b8619;
+        font-size: 1.13em;
+    }
+    @keyframes typing {
+        from { width: 0; }
+        to { width: 100%; }
+    }
+    @keyframes blink-caret {
+        0%,100% { border-color: #0b8619; }
+        50% { border-color: transparent; }
+    }
+    /* Tableau premium style macOS */
+    .macos-table {
+        background: rgba(255,255,255,0.82) !important;
+        backdrop-filter: blur(8px) saturate(1.2);
+        border-radius: 28px !important;
+        box-shadow: 0 12px 48px #00915022, 0 2px 12px #a4161a22 !important;
+        overflow: hidden !important;
+        margin-bottom: 40px !important;
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+        min-width: 700px;
+    }
+    .macos-table th, .macos-table td {
+        padding: 26px 32px !important;
+        font-size: 1.18rem !important;
+        font-family: 'Montserrat', sans-serif !important;
+        border: none !important;
+        background: none !important;
+        transition: background 0.18s;
+    }
+    .macos-table th {
+        background: linear-gradient(90deg,#e3f6fd 60%,#fffbe6 100%) !important;
+        color: #0b8619 !important;
+        font-weight: 900 !important;
+        letter-spacing: 0.7px !important;
+        border-bottom: 2.5px solid #e3f6fd !important;
+        text-align: left !important;
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        box-shadow: 0 2px 12px #00b4d822;
+    }
+    .macos-table tbody tr {
+        transition: background 0.18s, box-shadow 0.18s;
+        border-radius: 18px !important;
+    }
+    .macos-table tbody tr:hover {
+        background: #f0f4f8 !important;
+        box-shadow: 0 4px 18px #00b4d822 !important;
+    }
+    .macos-table td {
+        color: #222 !important;
+        vertical-align: middle !important;
+        border-bottom: 1.5px solid #f0f4f8 !important;
+        background: rgba(255,255,255,0.92) !important;
+    }
+    .macos-table tr:last-child td {
+        border-bottom: none !important;
+    }
+    .macos-table .btn {
+        border-radius: 12px !important;
+        font-size: 1.05rem !important;
+        padding: 8px 20px !important;
+        font-weight: 600;
+        box-shadow: 0 2px 8px #00b4d822;
+    }
+    .macos-table .badge {
+        font-size: 1.08rem !important;
+        padding: 9px 18px !important;
+        border-radius: 10px !important;
+        font-weight: 700;
+        letter-spacing: 0.2px;
+    }
+    .macos-table .dropdown-menu {
+        border-radius: 16px !important;
+        box-shadow: 0 8px 32px #00b4d822 !important;
+    }
+    .macos-table th:first-child, .macos-table td:first-child {
+        border-top-left-radius: 28px !important;
+    }
+    .macos-table th:last-child, .macos-table td:last-child {
+        border-top-right-radius: 28px !important;
+    }
+    @media (max-width: 1100px) {
+        .macos-table { min-width: 100%; }
+        .macos-table th, .macos-table td { padding: 12px 8px !important; font-size: 1rem !important; }
+    }
+    .dashboard-card-responsive {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    .dashboard-title-responsive {
+        font-size: 2rem;
+    }
+    .dashboard-btn-responsive {
+        font-size: 1.1rem;
+        padding: 12px 0;
+        border-radius: 14px;
+    }
+    .dashboard-alert-responsive {
+        font-size: 1.08rem;
+        border-radius: 12px;
+    }
+    @media (max-width: 600px) {
+        .dashboard-card-responsive {
+            max-width: 100vw !important;
+            width: 100vw !important;
+            border-radius: 0 !important;
+            padding: 18px 2vw 18px 2vw !important;
+            box-shadow: none !important;
+        }
+        .dashboard-title-responsive {
+            font-size: 1.25rem !important;
+        }
+        .dashboard-btn-responsive {
+            font-size: 1rem !important;
+            padding: 10px 0 !important;
+            border-radius: 10px !important;
+        }
+        .dashboard-alert-responsive {
+            font-size: 0.98rem !important;
+            border-radius: 8px !important;
+        }
+        .container-fluid {
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+    }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    window.addEventListener('DOMContentLoaded', function() {
+      {% if user.statut != 'payé' %}
+        var notifModal = new bootstrap.Modal(document.getElementById('notifCreationModal'));
+        notifModal.show();
+        setTimeout(function(){ notifModal.hide(); }, 6500);
+      {% endif %}
+      {% if user.statut == 'payé' %}
+        var notifModal = new bootstrap.Modal(document.getElementById('notifPlateformeModal'));
+        notifModal.show();
+        setTimeout(function(){ notifModal.hide(); }, 6500);
+      {% endif %}
+    });
+    </script>
+</body>
+</html> 

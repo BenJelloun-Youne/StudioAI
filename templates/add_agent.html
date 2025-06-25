@@ -1,0 +1,25 @@
+{% extends 'admin.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Ajouter un agent IA</h2>
+    <form method="post">
+        <div class="mb-3">
+            <label for="nom" class="form-label">Nom de l'agent</label>
+            <input type="text" class="form-control" id="nom" name="nom" required>
+        </div>
+        <div class="mb-3">
+            <label for="type" class="form-label">Type d'agent</label>
+            <select class="form-control" id="type" name="type" required>
+                <option value="emailing">E-mailing</option>
+                <option value="comptable">Saisie & gestion comptable</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="config" class="form-label">Configuration (optionnel)</label>
+            <textarea class="form-control" id="config" name="config" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Créer l'agent IA</button>
+        <a href="{{ url_for('admin_agents', user_id=user_id) }}" class="btn btn-secondary">Annuler</a>
+    </form>
+</div>
+{% endblock %} 

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - CASA IA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+    /* Popup demande preuve responsive */
+    .demande-preuve-popup {
+        min-width: 180px;
+        max-width: 320px;
+    }
+    @media (max-width: 600px) {
+        .demande-preuve-popup {
+            width: 100vw !important;
+            min-width: 100vw !important;
+            max-width: 100vw !important;
+            left: 0 !important;
+            right: 0 !important;
+            transform: none !important;
+            padding: 8px 2vw !important;
+            border-radius: 0 !important;
+            font-size: 1rem !important;
+            box-sizing: border-box !important;
+        }
+        .demande-preuve-popup input,
+        .demande-preuve-popup button {
+            font-size: 1rem !important;
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        .macos-table {
+            min-width: 600px !important;
+        }
+    }
+    </style>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="/" style="font-family: 'El Messiri', serif; color: #a4161a;">
+                <img src="/static/logo.jpeg" alt="CASA IA" height="38" style="border-radius:10px;box-shadow:0 2px 8px #00b4d822;margin-right:10px;"> CASA IA
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Accueil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/#solutions">Solutions</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/#tarifs">Tarifs</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/#contact">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/logout" title="Déconnexion"><i class="bi bi-box-arrow-right" style="font-size:1.3em;"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div style="padding-top:90px;"></div>
+    {% block content %}
+    <div class="container">
+        <div class="admin-header-notion mb-4" style="display:flex;align-items:center;justify-content:center;gap:16px;background:#fff;border-radius:18px;box-shadow:0 4px 32px #00915022;padding:24px 32px 18px 32px;">
+            <span class="notion-emoji" style="font-size:2.5rem;">📊</span>
+            <span class="notion-title" style="font-family:'El Messiri',serif;font-size:2.2rem;font-weight:800;color:#222;letter-spacing:1px;">
+                Dashboard Admin <span style="color:#009150;">CASA IA</span>
+            </span>
+        </div>
+        <div class="row mb-4 g-3 kpi-row-admin">
+            <div class="col-md-3 col-6">
+                <div class="kpi-card-new" style="background:#fff;border:5px solid #0b8619;border-radius:24px;box-shadow:0 8px 32px #0074d955;padding:24px 10px 18px 10px;min-width:0;">
+                    <div class="kpi-card-title" style="font-weight:700;font-size:1.08rem;text-align:center;word-break:break-word;">Abonnements actifs</div>
+                    <div class="kpi-card-value" style="font-weight:900;font-size:2.1rem;text-align:center;">{{ abonnements_actifs }}</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="kpi-card-new" style="background:#fff;border:5px solid #0b8619;border-radius:24px;box-shadow:0 8px 32px #0074d955;padding:24px 10px 18px 10px;min-width:0;">
+                    <div class="kpi-card-title" style="font-weight:700;font-size:1.08rem;text-align:center;word-break:break-word;">Inscriptions ce mois</div>
+                    <div class="kpi-card-value" style="font-weight:900;font-size:2.1rem;text-align:center;">{{ inscriptions_mois }}</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="kpi-card-new" style="background:#fff;border:5px solid #0b8619;border-radius:24px;box-shadow:0 8px 32px #0074d955;padding:24px 10px 18px 10px;min-width:0;">
+                    <div class="kpi-card-title" style="font-weight:700;font-size:1.08rem;text-align:center;word-break:break-word;">Paiements en attente</div>
+                    <div class="kpi-card-value" style="font-weight:900;font-size:2.1rem;text-align:center;">{{ paiements_en_attente }}</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="kpi-card-new" style="background:#fff;border:5px solid #0b8619;border-radius:24px;box-shadow:0 8px 32px #0074d955;padding:24px 10px 18px 10px;min-width:0;">
+                    <div class="kpi-card-title" style="font-weight:700;font-size:1.08rem;text-align:center;word-break:break-word;">MRR (MAD)</div>
+                    <div class="kpi-card-value" style="font-weight:900;font-size:2.1rem;text-align:center;">{{ mrr }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm p-4 kpi-graph-card" style="min-width:400px;max-width:1400px;margin:auto;">
+                    <h5 class="mb-3 fw-bold" style="font-family:'El Messiri',serif;">Évolution des inscriptions & CA (6 derniers mois)</h5>
+                    <canvas id="kpiChart" height="418" width="800" style="width:800px;max-width:100%;display:block;box-sizing:border-box;"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="card shadow p-4 mx-auto macos-glass" style="max-width:900px;">
+            <h2 class="mb-3">Administration — Utilisateurs</h2>
+            <input type="text" class="form-control mb-3" placeholder="Filtrer par email, offre ou statut..." id="filterInput">
+            <div class="table-responsive">
+                <table class="table macos-table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Offre</th>
+                            <th>Statut</th>
+                            <th>Date inscription</th>
+                            <th>Preuve paiement</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for u in users %}
+                        <tr>
+                            <td>{{ u.email }}</td>
+                            <td>{{ u.offre|capitalize }}</td>
+                            <td>
+                                {% if u.statut == 'payé' %}
+                                    <span class="badge bg-success">Payé</span>
+                                {% elif u.statut == 'annulé' %}
+                                    <span class="badge bg-danger">Annulé</span>
+                                {% elif u.statut == 'en_attente_validation' %}
+                                    <span class="badge bg-warning text-dark">En attente</span>
+                                {% elif u.statut == 'preuve_supplémentaire' %}
+                                    <span class="badge bg-info text-dark">Preuve supp.</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ u.statut }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ u.date_inscription.strftime('%d/%m/%Y') }}</td>
+                            <td>
+                                {% if u.preuve_paiement %}
+                                    <a href="/{{ u.preuve_paiement }}" target="_blank" class="btn btn-link btn-sm p-0">Voir</a>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if u.statut in ['en_attente_validation', 'preuve_supplémentaire'] %}
+                                <div class="d-flex flex-wrap gap-2 justify-content-center align-items-center">
+                                    <a href="/admin/valider/{{ u.id }}" class="text-success" title="Valider"><i class="bi bi-check-circle-fill" style="font-size:1.3em;"></i></a>
+                                    <a href="/admin/annuler/{{ u.id }}" class="text-danger" title="Annuler"><i class="bi bi-x-circle-fill" style="font-size:1.3em;"></i></a>
+                                    <form method="POST" action="/admin/preuve/{{ u.id }}" class="d-inline m-0 p-0 demande-preuve-form" style="display:inline-block;width:32px;position:relative;">
+                                        <button type="button" class="p-0 m-0 text-warning border-0 bg-transparent demande-preuve-btn" title="Demander preuve" style="background:none;border:none;">
+                                            <i class="bi bi-exclamation-circle-fill" style="font-size:1.3em;"></i>
+                                        </button>
+                                        <div class="demande-preuve-popup" style="display:none;position:absolute;top:120%;left:50%;transform:translateX(-50%);background:#fff;border:1px solid #eee;border-radius:8px;box-shadow:0 2px 8px #0001;padding:10px;z-index:10;min-width:180px;">
+                                            <input type="text" name="message_admin" class="form-control form-control-sm mb-2" placeholder="Message (optionnel)">
+                                            <button type="submit" class="btn btn-warning btn-sm w-100">Envoyer</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                {% else %}
+                                <div class="d-flex flex-wrap gap-2 justify-content-center align-items-center">
+                                    <a href="{{ url_for('admin_agents', user_id=u.id) }}" class="text-info" title="Gérer IA"><i class="bi bi-robot" style="font-size:1.3em;"></i></a>
+                                    <span class="text-secondary" title="Gérer utilisateur" style="opacity:0.5;"><i class="bi bi-person" style="font-size:1.3em;"></i></span>
+                                </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+    <footer class="admin-footer-motif mt-5 text-center small text-muted">
+        <svg width="120" height="24" viewBox="0 0 120 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:0.18;">
+            <path d="M0 12 Q30 24 60 12 T120 12" stroke="#a4161a" stroke-width="2" fill="none"/>
+            <circle cx="60" cy="12" r="3" fill="#00b4d8"/>
+            <circle cx="30" cy="12" r="2" fill="#14532d"/>
+            <circle cx="90" cy="12" r="2" fill="#14532d"/>
+        </svg>
+        <div>Dashboard CASA IA &copy; 2024</div>
+    </footer>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.demande-preuve-btn').forEach(function(btn){
+        btn.addEventListener('click', function(e){
+            e.preventDefault();
+            document.querySelectorAll('.demande-preuve-popup').forEach(p => p.style.display = 'none');
+            btn.parentElement.querySelector('.demande-preuve-popup').style.display = 'block';
+            btn.parentElement.querySelector('input[name="message_admin"]').focus();
+        });
+    });
+    document.addEventListener('click', function(e){
+        document.querySelectorAll('.demande-preuve-popup').forEach(function(popup){
+            if (!popup.contains(e.target) && !popup.parentElement.querySelector('.demande-preuve-btn').contains(e.target)) {
+                popup.style.display = 'none';
+            }
+        });
+    });
+});
+// Animation cards
+setTimeout(() => {
+    document.querySelectorAll('.kpi-card').forEach((c,i)=>{
+        c.style.transform = 'scale(1)';
+        c.style.opacity = 1;
+        c.style.transition = 'all 0.7s cubic-bezier(.4,2,.6,1) '+(i*0.12)+'s';
+    });
+    // Animation compteur sur les KPI
+    document.querySelectorAll('.kpi-card-value').forEach(function(el){
+        const target = parseInt(el.textContent.replace(/[^0-9]/g, ''));
+        if(isNaN(target)) return;
+        let start = 0;
+        const step = Math.ceil(target/40);
+        function animate(){
+            start += step;
+            if(start >= target) { el.textContent = target; return; }
+            el.textContent = start;
+            requestAnimationFrame(animate);
+        }
+        el.textContent = '0';
+        animate();
+    });
+}, 200);
+// Graphe Chart.js (courbe)
+const ctx = document.getElementById('kpiChart').getContext('2d');
+fetch('/admin/kpi-data').then(r=>r.json()).then(data=>{
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data.labels,
+            datasets: [
+                {
+                    label:'Inscriptions',
+                    data:data.inscriptions,
+                    borderColor:'#00b4d8',
+                    backgroundColor:'rgba(0,180,216,0.12)',
+                    tension:0.35,
+                    pointBackgroundColor:'#fff',
+                    pointBorderColor:'#00b4d8',
+                    pointRadius:5,
+                    fill:true
+                },
+                {
+                    label:'CA (MAD)',
+                    data:data.ca,
+                    borderColor:'#a4161a',
+                    backgroundColor:'rgba(164,22,26,0.10)',
+                    tension:0.35,
+                    pointBackgroundColor:'#fff',
+                    pointBorderColor:'#a4161a',
+                    pointRadius:5,
+                    fill:true
+                }
+            ]
+        },
+        options: {
+            responsive:true,
+            plugins:{
+                legend:{position:'top',labels:{font:{family:'El Messiri',size:15}}},
+                tooltip:{backgroundColor:'#fff',titleColor:'#a4161a',bodyColor:'#222',borderColor:'#00b4d8',borderWidth:1}
+            },
+            scales:{
+                x:{
+                    grid:{display:false},
+                    ticks:{font:{family:'Montserrat',size:16},padding:12,color:'#222'},
+                    title:{display:true,text:'Mois',font:{family:'El Messiri',size:18},color:'#a4161a'},
+                },
+                y:{
+                    grid:{color:'#e3f6fd'},
+                    ticks:{font:{family:'Montserrat',size:13},stepSize:200},
+                    title:{display:true,text:'Valeur',font:{family:'El Messiri',size:16},color:'#009150'},
+                    beginAtZero:true,
+                    min: 0,
+                    max: Math.ceil(Math.max(...data.ca, ...data.inscriptions, 200) / 200) * 200
+                }
+            }
+        }
+    });
+});
+// Filtre
+const filterInput = document.createElement('input');
+filterInput.type = 'text';
+filterInput.placeholder = 'Filtrer par email, offre ou statut...';
+filterInput.className = 'form-control mb-2';
+const table = document.querySelector('table');
+table.parentNode.insertBefore(filterInput, table);
+filterInput.addEventListener('input', function() {
+    const val = this.value.toLowerCase();
+    document.querySelectorAll('table tbody tr').forEach(tr => {
+        tr.style.display = Array.from(tr.children).some(td => td.textContent.toLowerCase().includes(val)) ? '' : 'none';
+    });
+});
+// Tri sur clic entête
+let sortDir = 1, sortCol = 0;
+document.querySelectorAll('table thead th').forEach((th, idx) => {
+    th.style.cursor = 'pointer';
+    th.addEventListener('click', function() {
+        sortCol = idx;
+        sortDir *= -1;
+        const rows = Array.from(document.querySelectorAll('table tbody tr'));
+        rows.sort((a, b) => {
+            const ta = a.children[sortCol].textContent.trim().toLowerCase();
+            const tb = b.children[sortCol].textContent.trim().toLowerCase();
+            if(!isNaN(ta) && !isNaN(tb)) return (parseFloat(ta)-parseFloat(tb))*sortDir;
+            return ta.localeCompare(tb)*sortDir;
+        });
+        rows.forEach(tr => tr.parentNode.appendChild(tr));
+    });
+});
+</script>
+</html> 
