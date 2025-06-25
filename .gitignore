@@ -4,10 +4,6 @@ ENV/
 .env
 .venv/
 
-# Fichiers de base de données
-*.db
-instance/
-
 # Fichiers Python compilés
 __pycache__/
 *.py[cod]
