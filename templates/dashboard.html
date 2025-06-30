@@ -80,7 +80,7 @@
         </div>
         {% endif %}
         <div class="card shadow p-4 mx-auto dashboard-card-responsive">
-            <h2 class="mb-3 dashboard-title-responsive">Bienvenue, {{ user.email }}</h2>
+            <h2 class="mb-3 dashboard-title-responsive text-center" style="color:#1a1a1a; font-family: 'Playfair Display', 'Montserrat', serif; font-weight:700; letter-spacing:0.5px; font-size:2.1rem;">Bienvenue, {{ user.email }}</h2>
             <p><b>Offre :</b> {{ user.offre|capitalize }}</p>
             <p><b>Statut :</b> {{ user.statut }}</p>
             {% if user.statut != 'payé' %}

@@ -1,7 +1,7 @@
 {% extends 'admin.html' %}
 {% block content %}
 <div class="container mt-4">
-    <h2>Agents IA de {{ user.email }}</h2>
+    <h2 class="text-center" style="color:#1a1a1a; font-family: 'Playfair Display', 'Montserrat', serif; font-weight:700; letter-spacing:0.5px; font-size:2.1rem;">Agents IA de {{ user.email }}</h2>
     <a href="{{ url_for('add_agent', user_id=user.id) }}" class="btn btn-primary mb-3">Ajouter un agent IA</a>
     <table class="table table-bordered">
         <thead>

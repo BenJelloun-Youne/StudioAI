@@ -4,6 +4,16 @@ body, .navbar, .navbar-brand, .nav-link, .btn {
     font-family: 'Inter', 'Nunito', 'El Messiri', serif !important;
 }
 
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  z-index: -2;
+  pointer-events: none;
+  background: linear-gradient(120deg, #e0e7ff 0%, #f8fafc 100%);
+  opacity: 1;
+}
+
 body {
     background-color: #fff !important;
     font-family: 'Montserrat', sans-serif;
@@ -13,6 +23,8 @@ body {
     background-size: initial;
     background-attachment: initial;
     /* plus aucune animation sur le body */
+    position: relative;
+    z-index: 1;
 }
 
 @keyframes bgParallax {
@@ -38,16 +50,16 @@ body {
     z-index: 1;
 }
 .demo-btn {
-    background-color: #a4161a;
-    border: none;
-    color: #fff;
+    background: #00b4d8 !important;
+    color: #fff !important;
     font-weight: 700;
-    box-shadow: 0 4px 20px rgba(164,22,26,0.1);
+    box-shadow: none !important;
     transition: background 0.3s;
 }
 .demo-btn:hover {
-    background-color: #14532d;
-    color: #fff;
+    background: #14532d !important;
+    color: #fff !important;
+    box-shadow: none !important;
 }
 img {
     border: 4px solid #fff;
@@ -540,6 +552,7 @@ section {
     transition: box-shadow 0.3s, transform 0.3s;
     cursor: pointer;
     position: relative;
+    z-index: 2;
 }
 .benefit-item:nth-child(1) { animation-delay: 0.2s; }
 .benefit-item:nth-child(2) { animation-delay: 0.6s; }
@@ -912,14 +925,6 @@ section {
     opacity: 0.9;
 }
 
-body {
-    background: linear-gradient(120deg, #e0e7ff 0%, #f8fafc 100%);
-    min-height: 100vh;
-    font-family: 'Montserrat', sans-serif;
-    position: relative;
-    z-index: 1;
-}
-
 /* Navbar glassmorphism */
 .glass-nav {
     background: rgba(255,255,255,0.7)!important;
@@ -948,20 +953,20 @@ body {
 }
 
 .neon-btn {
-    background: linear-gradient(90deg, #00b4d8 0%, #a4161a 100%);
-    color: #fff;
+    background: #00b4d8 !important;
+    color: #fff !important;
     border: none;
-    box-shadow: 0 0 8px #00b4d8, 0 0 24px #00b4d8aa;
-    text-shadow: 0 0 6px #fff, 0 0 12px #00b4d8;
-    transition: box-shadow 0.3s, background 0.3s, color 0.3s;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    animation: none !important;
     border-radius: 32px;
     font-size: 1.2em;
     letter-spacing: 1px;
 }
 .neon-btn:hover {
-    box-shadow: 0 0 24px #a4161a, 0 0 48px #00b4d8cc;
-    background: #00b4d8;
-    color: #fff;
+    background: #14532d !important;
+    color: #fff !important;
+    box-shadow: none !important;
 }
 
 /* Glassmorphism cards */
@@ -1547,57 +1552,87 @@ body {
 
 /* FAQ accordéon glass startup */
 .faq-accordion {
-    background: rgba(255,255,255,0.7);
-    border-radius: 18px;
-    box-shadow: 0 4px 24px 0 #00b4d822;
-    border: 1.5px solid #00b4d822;
-    padding: 2em 1.5em;
-    margin-bottom: 2em;
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
+  background: none;
+  box-shadow: none;
+  border: none;
+  padding: 0;
+  max-width: 800px;
+  margin: 0 auto 2em auto;
 }
-.faq-item + .faq-item { margin-top: 1.1em; }
+.faq-item {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 16px #e3f6fd55;
+  margin-bottom: 1.2em;
+  transition: box-shadow 0.25s, background 0.25s;
+  border: 1.5px solid #e3f6fd;
+  overflow: hidden;
+}
+.faq-item.open {
+  box-shadow: 0 8px 32px #00b4d822;
+  border-color: #00b4d8;
+}
 .faq-question {
-    width: 100%;
-    background: none;
-    border: none;
-    outline: none;
-    font-size: 1.13em;
-    font-weight: 700;
-    color: #a4161a;
-    text-align: left;
-    padding: 0.7em 0.7em 0.7em 0;
-    border-radius: 12px;
-    transition: background 0.2s, color 0.2s;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  width: 100%;
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 1.18em;
+  font-weight: 700;
+  color: #14532d;
+  text-align: left;
+  padding: 1.1em 1.2em 1.1em 1.2em;
+  border-radius: 0;
+  transition: background 0.2s, color 0.2s;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: none;
 }
 .faq-question:hover, .faq-item.open .faq-question {
-    background: linear-gradient(90deg,#e3f6fd 0%,#fff 100%);
-    color: #00b4d8;
+  background: #e3f6fd;
+  color: #00b4d8;
 }
 .faq-icon {
-    font-size: 1.5em;
-    margin-left: 0.7em;
-    transition: transform 0.3s;
+  font-size: 1.6em;
+  margin-left: 1em;
+  transition: transform 0.3s, color 0.2s;
+  color: #00b4d8;
 }
-.faq-item.open .faq-icon { transform: rotate(45deg); }
+.faq-item.open .faq-icon {
+  transform: rotate(45deg);
+  color: #14532d;
+}
 .faq-answer {
-    max-height: 0;
-    overflow: hidden;
-    background: none;
-    color: #14532d;
-    font-size: 1.05em;
-    font-weight: 500;
-    padding: 0 0.7em;
-    transition: max-height 0.4s cubic-bezier(.4,2,.6,1), padding 0.3s;
+  max-height: 0;
+  overflow: hidden;
+  background: none;
+  color: #14532d;
+  font-size: 1.08em;
+  font-weight: 500;
+  padding: 0 1.2em;
+  transition: max-height 0.5s cubic-bezier(.4,2,.6,1), padding 0.3s, opacity 0.3s;
+  opacity: 0;
 }
 .faq-item.open .faq-answer {
-    max-height: 400px;
-    padding: 0.7em 0.7em 1em 0.7em;
+  max-height: 400px;
+  padding: 0.7em 1.2em 1.2em 1.2em;
+  opacity: 1;
+}
+@media (max-width: 600px) {
+  .faq-item {
+    border-radius: 12px;
+    margin-bottom: 0.7em;
+  }
+  .faq-question {
+    font-size: 1.05em;
+    padding: 0.8em 0.7em 0.8em 0.7em;
+  }
+  .faq-answer, .faq-item.open .faq-answer {
+    padding-left: 0.7em;
+    padding-right: 0.7em;
+  }
 }
 
 /* FAQ Chatbot popup */
