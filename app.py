@@ -7,7 +7,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = "ma_cle_ultra_secrete_2024"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///aiflow.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///AIPIflow.db'
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['SESSION_COOKIE_SECURE'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
@@ -37,8 +37,8 @@ def create_db():
     with app.app_context():
         db.create_all()
         # Création du compte admin par défaut
-        if not User.query.filter_by(email='admin@aiflow.ma').first():
-            admin = User(email='admin@aiflow.ma', password_hash=generate_password_hash('admin123'), is_admin=True, statut='payé', offre='pro')
+        if not User.query.filter_by(email='admin@AIPIflow.com').first():
+            admin = User(email='admin@AIPIflow.com', password_hash=generate_password_hash('admin123'), is_admin=True, statut='payé', offre='pro')
             db.session.add(admin)
             db.session.commit()
 
@@ -134,15 +134,15 @@ def admin():
     if not user.is_admin:
         flash("Accès réservé à l'admin.")
         return redirect(url_for('dashboard'))
-    users = User.query.filter(User.email != 'admin@aiflow.ma').all()
+    users = User.query.filter(User.email != 'admin@AIPIflow.com').all()
     # Stats
     now = datetime.now()
-    abonnements_actifs = User.query.filter(User.statut == 'payé', User.email != 'admin@aiflow.ma').count()
-    inscriptions_mois = User.query.filter(db.extract('month', User.date_inscription) == now.month, db.extract('year', User.date_inscription) == now.year, User.email != 'admin@aiflow.ma').count()
-    paiements_en_attente = User.query.filter(User.statut == 'en_attente_validation', User.email != 'admin@aiflow.ma').count()
+    abonnements_actifs = User.query.filter(User.statut == 'payé', User.email != 'admin@AIPIflow.com').count()
+    inscriptions_mois = User.query.filter(db.extract('month', User.date_inscription) == now.month, db.extract('year', User.date_inscription) == now.year, User.email != 'admin@AIPIflow.com').count()
+    paiements_en_attente = User.query.filter(User.statut == 'en_attente_validation', User.email != 'admin@AIPIflow.com').count()
     # CA et MRR (selon offre)
     offre_prix = {'essentiel': 1200, 'pro': 3300, 'sur-mesure': 0}
-    users_payes = User.query.filter(User.statut == 'payé', User.email != 'admin@aiflow.ma').all()
+    users_payes = User.query.filter(User.statut == 'payé', User.email != 'admin@AIPIflow.com').all()
     ca_mois = sum(offre_prix.get(u.offre, 0) for u in users_payes if u.date_inscription.month == now.month and u.date_inscription.year == now.year)
     mrr = sum(offre_prix.get(u.offre, 0) for u in users_payes)
     return render_template('admin.html', users=users, abonnements_actifs=abonnements_actifs, inscriptions_mois=inscriptions_mois, paiements_en_attente=paiements_en_attente, ca_mois=ca_mois, mrr=mrr)
@@ -222,7 +222,7 @@ def admin_kpi_data():
         year = now.year if now.month - i > 0 else now.year - 1
         label = f"{month:02d}/{year}"
         labels.append(label)
-        users_month = User.query.filter(db.extract('month', User.date_inscription) == month, db.extract('year', User.date_inscription) == year, User.email != 'admin@aiflow.ma').all()
+        users_month = User.query.filter(db.extract('month', User.date_inscription) == month, db.extract('year', User.date_inscription) == year, User.email != 'admin@AIPIflow.com').all()
         inscriptions.append(len(users_month))
         ca.append(sum(offre_prix.get(u.offre, 0) for u in users_month if u.statut == 'payé'))
     return jsonify({'labels': labels, 'inscriptions': inscriptions, 'ca': ca})
@@ -322,5 +322,96 @@ def config_agent(agent_id):
     config = json.loads(agent.config) if agent.config else {}
     return render_template('config_agent.html', agent=agent, config=config)
 
+# --- SCRIPT POUR AJOUTER DES UTILISATEURS FACTICES ---
+def creer_utilisateurs_fictifs(nb=20):
+    from random import choice, randint
+    from faker import Faker
+    fake = Faker('fr_FR')
+    offres = ['essentiel', 'pro', 'sur-mesure']
+    statuts = ['payé', 'en_attente_validation', 'annulé', 'preuve_supplémentaire']
+    with app.app_context():
+        for i in range(nb):
+            email = fake.unique.email()
+            password_hash = generate_password_hash('test1234')
+            offre = choice(offres)
+            statut = choice(statuts)
+            date_inscription = fake.date_time_between(start_date='-6M', end_date='now')
+            if not User.query.filter_by(email=email).first():
+                user = User(
+                    email=email,
+                    password_hash=password_hash,
+                    offre=offre,
+                    statut=statut,
+                    date_inscription=date_inscription,
+                    is_admin=False
+                )
+                db.session.add(user)
+        db.session.commit()
+    print(f"{nb} utilisateurs fictifs créés !")
+
+def creer_agents_ia_fictifs(nb_agents_par_user=2):
+    from random import choice, randint
+    from faker import Faker
+    import json
+    fake = Faker('fr_FR')
+    types_agents = ['emailing', 'comptable']
+    with app.app_context():
+        users = User.query.filter(User.email != 'admin@AIPIflow.com').all()
+        total = 0
+        for user in users:
+            for _ in range(nb_agents_par_user):
+                type_agent = choice(types_agents)
+                if type_agent == 'emailing':
+                    config = {
+                        'email': fake.email(),
+                        'objet': fake.sentence(nb_words=6),
+                        'template': fake.text(max_nb_chars=100)
+                    }
+                else:
+                    config = {
+                        'logiciel': choice(['Sage', 'Cegid', 'Quickbooks', 'EBP']),
+                        'frequence': choice(['mensuel', 'trimestriel', 'annuel']),
+                        'notes': fake.sentence(nb_words=10)
+                    }
+                agent = AgentIA(
+                    user_id=user.id,
+                    type=type_agent,
+                    nom=fake.first_name() + 'Bot',
+                    config=json.dumps(config)
+                )
+                db.session.add(agent)
+                total += 1
+        db.session.commit()
+    print(f"{total} agents IA fictifs créés !")
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    import sys
+    if len(sys.argv) > 1 and sys.argv[1] == 'fakes':
+        try:
+            nb = int(sys.argv[2]) if len(sys.argv) > 2 else 20
+        except ValueError:
+            nb = 20
+        creer_utilisateurs_fictifs(nb)
+    elif len(sys.argv) > 1 and sys.argv[1] == 'fakes_agents':
+        try:
+            nb_agents = int(sys.argv[2]) if len(sys.argv) > 2 else 2
+        except ValueError:
+            nb_agents = 2
+        creer_agents_ia_fictifs(nb_agents)
+    elif len(sys.argv) > 1 and sys.argv[1] == 'list_users':
+        from tabulate import tabulate
+        with app.app_context():
+            users = User.query.filter(User.email != 'admin@AIPIflow.com').limit(30).all()
+            print(tabulate([[u.id, u.email, u.statut, u.offre, u.date_inscription.strftime('%Y-%m-%d')] for u in users], headers=['ID','Email','Statut','Offre','Date']))
+    elif len(sys.argv) > 1 and sys.argv[1] == 'export_users_csv':
+        import csv
+        with app.app_context():
+            users = User.query.filter(User.email != 'admin@AIPIflow.com').all()
+            with open('utilisateurs_export.csv', 'w', newline='', encoding='utf-8') as f:
+                writer = csv.writer(f)
+                writer.writerow(['ID', 'Email', 'Statut', 'Offre', 'Date'])
+                for u in users:
+                    writer.writerow([u.id, u.email, u.statut, u.offre, u.date_inscription.strftime('%Y-%m-%d')])
+            print(f"Export CSV terminé : utilisateurs_export.csv ({len(users)} utilisateurs)")
+    else:
+        app.run(debug=True)
